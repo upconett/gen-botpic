@@ -7,10 +7,13 @@ from app.models import Emoji, Color
 
 def test_gen():
     gen = PillowGenerator(
-        emoji=Emoji("printer"),
+        emoji=Emoji("artist-palette"),
         colors=[
-            Color("#EEC643"),
-            Color("#000000")
+            Color("#98D9C2"),
+            Color("#B9FFB7"),
+            Color("#ABEDC6"),
+            Color("#F19A3E"), 
+            Color("#9D2C95")
         ],
         save_path="tests/data/"
     )

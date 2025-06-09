@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import random
 
 from PIL import Image
 
@@ -14,7 +15,18 @@ class PillowGenerator(Generator):
         img_path = self._gen_path()
 
         img = Image.new("RGBA", self.size, color=self.colors[0].hex)
-        self._add_radial_gradient(img, self.colors[1], 500, (0, 0))
+
+        for i in range(20):
+            self._add_radial_gradient(
+                img,
+                self.colors[i % len(self.colors)],
+                random.randint(20, 60)*10,
+                (
+                    random.randint(0, 500),
+                    random.randint(0, 500)
+                )
+            )
+
         self._add_emoji(img)
 
         img.save(img_path)
