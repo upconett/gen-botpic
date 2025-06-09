@@ -1,11 +1,15 @@
 import os
 import numpy as np
+import random
 
 from PIL import Image
 
 from app.gen.Generator import Generator
-from app.gen.exceptions import PosOutsideImage
 from app.models import Color
+from app.gen.exceptions import (
+    PosOutsideImage,
+    UnknownEmoji
+)
 
 
 class PillowGenerator(Generator):
@@ -14,7 +18,19 @@ class PillowGenerator(Generator):
         img_path = self._gen_path()
 
         img = Image.new("RGBA", self.size, color=self.colors[0].hex)
-        self._add_radial_gradient(img, self.colors[1], 500, (0, 0))
+
+        for i in range(20):
+            self._add_radial_gradient(
+                img,
+                self.colors[i % len(self.colors)],
+                random.randint(20, 60)*10,
+                (
+                    random.randint(0, 500),
+                    random.randint(0, 500)
+                )
+            )
+
+        self._add_emoji(img)
 
         img.save(img_path)
         return img_path
@@ -26,6 +42,34 @@ class PillowGenerator(Generator):
 
         img_path = os.path.join(self.save_path, "botpic.png")
         return img_path
+
+    
+    def _add_emoji(
+        self,
+        img: Image.Image
+    ):
+        if not self.emoji:
+            return
+
+        if not os.path.exists(self.emoji.path):
+            raise UnknownEmoji
+
+        emoji_img = Image.open(self.emoji.path)
+
+        # Resize emoji a bit
+        emoji_size = (
+            int(emoji_img.size[0]*1.5),
+            int(emoji_img.size[1]*1.5),
+        )
+        emoji_img = emoji_img.resize(emoji_size)
+
+        # Placing emoji in the middle of the image
+        emoji_pos = (
+            self.size[0]//2 - emoji_img.size[0]//2,
+            self.size[1]//2 - emoji_img.size[1]//2,
+        )
+
+        self._alpha_paste(img, emoji_img, emoji_pos)
 
 
     def _add_radial_gradient(
@@ -41,15 +85,7 @@ class PillowGenerator(Generator):
             
         pos = _fix_pos(pos, radius)
         grad = self._gen_radial_gradient(img, color, radius)
-        
-        larger = Image.new("RGBA", img.size, color=(0,0,0,0))
-        larger.paste(grad, pos)
-
-        larger.save("larger.png")
-
-        img.paste(Image.alpha_composite(img, larger))
-
-    
+        self._alpha_paste(img, grad, pos)
 
     
     def _gen_radial_gradient(
@@ -68,10 +104,19 @@ class PillowGenerator(Generator):
         alpha = 255 - np.clip(0, 255, alpha)
 
         grad.putalpha(Image.fromarray(alpha.astype(np.uint8)))
-        grad.save("grad.png")
 
         return grad
 
+    
+    def _alpha_paste(
+        self,
+        img1: Image.Image,
+        img2: Image.Image,
+        pos: tuple[int, int] = (0,0)
+    ):
+        larger_img2 = Image.new("RGBA", img1.size, color=(0,0,0,0))
+        larger_img2.paste(img2, pos)
+        img1.paste(Image.alpha_composite(img1, larger_img2))
 
 
 def _pos_in_img(pos: tuple[int, int], img: Image.Image) -> bool:
