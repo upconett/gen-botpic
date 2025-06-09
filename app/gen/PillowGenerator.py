@@ -5,8 +5,11 @@ import random
 from PIL import Image
 
 from app.gen.Generator import Generator
-from app.gen.exceptions import PosOutsideImage
 from app.models import Color
+from app.gen.exceptions import (
+    PosOutsideImage,
+    UnknownEmoji
+)
 
 
 class PillowGenerator(Generator):
@@ -47,6 +50,9 @@ class PillowGenerator(Generator):
     ):
         if not self.emoji:
             return
+
+        if not os.path.exists(self.emoji.path):
+            raise UnknownEmoji
 
         emoji_img = Image.open(self.emoji.path)
 
