@@ -1,5 +1,19 @@
+import os
+
+
 class Emoji:
-    id: str
+    name: str
+
+    def __init__(self, name: str):
+        self.name = name
+
+    @property
+    def path(self) -> str:
+        return os.path.join(
+            "resources/emoji",
+            f"{self.name}.png"
+        )
+
 
 class Color:
     """ Color in hex code """
