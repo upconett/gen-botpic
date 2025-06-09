@@ -1,4 +1,5 @@
 import os
+from app.util import get_resource_path
 
 
 class Emoji:
@@ -10,7 +11,7 @@ class Emoji:
     @property
     def path(self) -> str:
         return os.path.join(
-            "resources/emoji",
+            get_resource_path("resources/emoji"),
             f"{self.name}.png"
         )
 

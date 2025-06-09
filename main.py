@@ -17,16 +17,17 @@ def gen_from_argv() -> PillowGenerator:
     colors = args[2:]
 
     for color in colors:
+        color=color.replace('#', '')
         if any((
-            len(color) != 7,
-            color[0] != '#',
-            not color[1:].isalnum()
+            len(color) != 6,
+            not color.isalnum()
         )): 
             raise InvalidColor(color)
 
     return PillowGenerator(
         emoji=emoji,
-        colors=colors # type: ignore
+        colors=colors, # type: ignore
+        save_path='.'
     )
     
 
@@ -34,19 +35,20 @@ def main():
     try:
         with emojis.unzip():
             gen = gen_from_argv()
-            gen.generate()
+            pic_path = gen.generate()
+        print(f"Done, see {pic_path}")
 
     except InvalidUsage:
         print("Usage: gen-botpic <emoji> <hex-color-1> [hex-color-2] ... [hex-color-n]")
-        quit(1)
+        sys.exit(1)
 
     except InvalidColor as e:
-        print(f"Invalid color: {e.args[0]}, required format: \"#000000\" (hex)")
-        quit(1)
+        print(f"Invalid color: {e.args[0]}, required format: [#]000000 (hex)")
+        sys.exit(1)
 
     except UnknownEmoji:
         print("Unknown emoji, consider kebab case naming (i.e hugging-face)")
-        quit(1)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

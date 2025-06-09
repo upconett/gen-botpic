@@ -4,3 +4,6 @@ test/data/
 data/
 .ignore/
 resources/emoji/
+botpic.png
+dist
+build
