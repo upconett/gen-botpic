@@ -6,7 +6,7 @@ from PIL import Image
 
 from app.gen.Generator import Generator
 from app.models import Color
-from app.gen.exceptions import (
+from app.exceptions import (
     PosOutsideImage,
     UnknownEmoji
 )
@@ -17,18 +17,19 @@ class PillowGenerator(Generator):
     def generate(self) -> str:
         img_path = self._gen_path()
 
-        img = Image.new("RGBA", self.size, color=self.colors[0].hex)
+        img = Image.new("RGBA", self.size, color=self.main_color.hex)
 
-        for i in range(20):
-            self._add_radial_gradient(
-                img,
-                self.colors[i % len(self.colors)],
-                random.randint(20, 60)*10,
-                (
-                    random.randint(0, 500),
-                    random.randint(0, 500)
+        if self.additional_colors:
+            for i in range(self.drops):
+                self._add_radial_gradient(
+                    img,
+                    self.additional_colors[i % len(self.additional_colors)],
+                    random.randint(100, 300),
+                    (
+                        random.randint(0, 500),
+                        random.randint(0, 500)
+                    )
                 )
-            )
 
         self._add_emoji(img)
 
@@ -58,8 +59,8 @@ class PillowGenerator(Generator):
 
         # Resize emoji a bit
         emoji_size = (
-            int(emoji_img.size[0]*1.5),
-            int(emoji_img.size[1]*1.5),
+            int(emoji_img.size[0]*self.emoji_scale),
+            int(emoji_img.size[1]*self.emoji_scale),
         )
         emoji_img = emoji_img.resize(emoji_size)
 

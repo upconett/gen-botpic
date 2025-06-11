@@ -1,4 +1,5 @@
 import os
+import re
 from app.util import get_resource_path
 
 
@@ -22,6 +23,10 @@ class Color:
 
     def __init__(self, code: str):
         self.code = code.replace('#', '')
+
+    @staticmethod
+    def valid(color: str) -> bool:
+        return re.match(r"#?[0-9a-fA-f]{6}", color) is not None
 
     @property
     def hex(self) -> str:

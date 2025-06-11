@@ -2,7 +2,7 @@ import sys
 import os
 
 
-def get_resource_path(relative_path):
+def get_resource_path(relative_path: str) -> str:
     """ Get absolute path to resource, works for dev and for PyInstaller """
     if hasattr(sys, '_MEIPASS'):
         # Running in PyInstaller bundle

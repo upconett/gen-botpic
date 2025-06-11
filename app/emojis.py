@@ -5,21 +5,23 @@ from contextlib import contextmanager
 from app.util import get_resource_path
 
 
+EMOJI_DIR_P = get_resource_path("resources/emoji/") 
+EMOJI_ZIP_P = get_resource_path("resources/emoji.zip") 
+
+
 @contextmanager
 def unzip():
     """ Context manager \\
     Unzips archive with emoji images to `resources/emoji/`,
     removes the `resources/emoji/` after escaping the with block
     """
-    emoji_dir_p = get_resource_path("resources/emoji/") 
-    emoji_zip_p = get_resource_path("resources/emoji.zip") 
     try:
-        os.makedirs(emoji_dir_p, exist_ok=True)
-        with zipf.ZipFile(emoji_zip_p) as file:
-            file.extractall(emoji_dir_p)
-        yield
+        os.makedirs(EMOJI_DIR_P, exist_ok=True)
+        with zipf.ZipFile(EMOJI_ZIP_P) as file:
+            file.extractall(EMOJI_DIR_P)
+        yield EMOJI_DIR_P
     finally:
-        _super_remove(emoji_dir_p)
+        _super_remove(EMOJI_DIR_P)
 
 
 def _super_remove(_path: str):
