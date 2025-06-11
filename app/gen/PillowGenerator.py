@@ -22,10 +22,10 @@ class PillowGenerator(Generator):
         if self.additional_colors:
             for i in range(self.drops):
                 self._add_radial_gradient(
-                    img,
-                    self.additional_colors[i % len(self.additional_colors)],
-                    random.randint(100, 300),
-                    (
+                    img=img,
+                    color=self.additional_colors[i % len(self.additional_colors)],
+                    radius=random.randint(100, 300),
+                    pos=(
                         random.randint(0, 500),
                         random.randint(0, 500)
                     )

@@ -1,5 +1,4 @@
 import os
-import sys
 from argparse import Namespace
 
 from app.models import Color, Emoji
