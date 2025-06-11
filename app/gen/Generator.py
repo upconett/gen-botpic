@@ -12,19 +12,21 @@ class Generator(ABC):
     def __init__(
         self, *,
         emoji: Emoji | str | None = None,
-        colors: list[Color | str] = [],
+        main_color: Color,
+        additional_colors: list[Color] = [],
+        drops: int = 20,
+        emoji_scale: float = 1.5,
         size: tuple[int, int] = (500, 500),
-        save_path: str = "data",
+        save_path: str = ".",
     ):
         if isinstance(emoji, str):
             emoji = Emoji(emoji)
 
-        for i, color in enumerate(colors):
-            if isinstance(color, str):
-                colors[i] = Color(color)
-
         self.emoji = emoji
-        self.colors = colors # type: ignore
+        self.main_color = main_color
+        self.additional_colors = additional_colors
+        self.emoji_scale = emoji_scale
+        self.drops = drops
         self.size = size
 
         self.save_path = save_path
