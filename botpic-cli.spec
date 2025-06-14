@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['main.py'],
+    ['cli.py'],
     pathex=[],
     binaries=[],
     datas=[('./resources/emoji.zip', 'resources')],
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='botpic',
+    name='botpic-cli',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
